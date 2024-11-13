@@ -17,10 +17,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 @Service
 public class JwtService {
+    private static final Dotenv dotenv = Dotenv.configure().directory(".").load();
 
-    private static final String SECRET_KEY = "586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
+    private static final String SECRET_KEY = dotenv.get("JWT_SECRET");
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();

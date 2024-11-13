@@ -46,7 +46,7 @@ public class PetsController {
         pet.setEdad(animalDto.getEdad());
         pet.setImagen(animalDto.getImagen());
         pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : "Bilbao");
-        pet.setGastosDeGestion("500€"); // Valor predeterminado
+        pet.setGastosDeGestion("500€"); 
         pet.setUser(userService.getCurrentUser());
 
         petsService.addPets(pet);

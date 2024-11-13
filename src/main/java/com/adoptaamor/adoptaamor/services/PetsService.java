@@ -37,7 +37,6 @@ public class PetsService {
         if (existingPets.isPresent()) {
             Pets updatePets = existingPets.get();
 
-            // Actualizando los campos con los métodos correctos
             updatePets.setNombre(pets.getNombre());
             updatePets.setUbicacion(pets.getUbicacion());
             updatePets.setImagen(pets.getImagen());
