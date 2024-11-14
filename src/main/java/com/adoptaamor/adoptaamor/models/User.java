@@ -30,6 +30,12 @@ public class User implements UserDetails {
         @Column(nullable = false)
         private String name;
 
+        @Column(nullable = false)
+        private String lastname;
+
+        @Column(nullable = false, unique = true)
+        private String dni;
+
         @Column(nullable = false, unique = true)
         private String email;
 
@@ -40,7 +46,7 @@ public class User implements UserDetails {
         @Column(nullable = false)
         private Role role;
 
-        @OneToMany(mappedBy ="user",fetch=FetchType.LAZY,cascade=CascadeType.PERSIST)
+        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
         private List<Pets> pets = new ArrayList<>();
 
         @Override

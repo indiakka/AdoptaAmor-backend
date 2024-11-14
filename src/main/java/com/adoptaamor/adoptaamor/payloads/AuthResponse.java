@@ -4,12 +4,16 @@ public class AuthResponse {
     private String token;
     private Long userId;
     private String name;
+    private String lastName;
+    private String dni;
     private String role;
 
-    public AuthResponse(String token, Long userId, String name, String role) {
+    public AuthResponse(String token, Long userId, String name, String lastName, String dni, String role) {
         this.token = token;
         this.userId = userId;
         this.name = name;
+        this.lastName = lastName;
+        this.dni = dni;
         this.role = role;
     }
 
@@ -35,6 +39,22 @@ public class AuthResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     public String getRole() {

@@ -37,6 +37,8 @@ public class AuthService {
 
         User newUser = User.builder()
                 .name(registerRequest.getName())
+                .lastname(registerRequest.getLastname())
+                .dni(registerRequest.getDni())
                 .email(registerRequest.getEmail())
                 .password(encodedPassword)
                 .role(Role.USER) 
@@ -62,7 +64,7 @@ public class AuthService {
 
         String token = jwtService.generateToken(user); 
 
-        AuthResponse authResponse = new AuthResponse(token, user.getId(), user.getName(), user.getRole().name());
+        AuthResponse authResponse = new AuthResponse(token, user.getId(), user.getName(), user.getLastname(),user.getDni(), user.getRole().name());
         return ResponseEntity.ok(authResponse);
     }
 
