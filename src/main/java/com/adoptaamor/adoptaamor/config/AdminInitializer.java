@@ -24,9 +24,11 @@ public class AdminInitializer {
         if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
             User admin = User.builder()
                     .name("Admin")
+                    .lastname("Admin")
                     .email("admin@gmail.com")
-                    .password(passwordEncoder.encode("1111")) 
-                    .role(Role.ADMIN) 
+                    .password(passwordEncoder.encode("1111"))
+                    .dni("12345678h")
+                    .role(Role.ADMIN)
                     .build();
 
             userRepository.save(admin);
