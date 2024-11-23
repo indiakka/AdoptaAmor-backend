@@ -46,6 +46,7 @@ public class User implements UserDetails {
         @Column(nullable = false)
         private Role role;
 
+        @Builder.Default
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
         private List<Pets> pets = new ArrayList<>();
 
