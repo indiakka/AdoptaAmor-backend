@@ -1,26 +1,26 @@
 package com.adoptaamor.adoptaamor;
 
+import java.util.Collections;
+
+import org.junit.jupiter.api.Test;
+import static org.mockito.BDDMockito.given;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.adoptaamor.adoptaamor.config.jwt.JwtAuthenticationFilter;
 import com.adoptaamor.adoptaamor.controllers.PetsController;
 import com.adoptaamor.adoptaamor.models.Pets;
 import com.adoptaamor.adoptaamor.services.PetsService;
 import com.adoptaamor.adoptaamor.services.UserService;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(controllers = PetsController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
 		JwtAuthenticationFilter.class }))
@@ -30,10 +30,10 @@ public class PetsControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@MockBean
+	@Mock
 	private PetsService petsService;
 
-	@MockBean
+	@Mock
 	private UserService userService;
 
 	@Test
@@ -54,4 +54,12 @@ public class PetsControllerTest {
 				.andExpect(content().json(
 						"[{\"nombre\":\"Max\", \"raza\":\"Golden Retriever\", \"tipo\":\"Perro\", \"tamano\":\"Grande\", \"edad\":5, \"ubicacion\":\"Madrid\"}]"));
 	}
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 }
