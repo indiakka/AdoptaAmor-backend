@@ -10,7 +10,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.adoptaamor.adoptaamor.models.role.Role;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,9 +47,13 @@ public class User implements UserDetails {
         private String lastname;
 
         @Column(nullable = false, unique = true)
+        @NotBlank(message = "El DNI no puede estar vacío")
+        @Pattern(regexp = "^[0-9]{8}[A-Za-z]$", message = "El DNI debe ser válido")
         private String dni;
 
         @Column(nullable = false, unique = true)
+        @NotBlank(message = "El email no puede estar vacío")
+        @Email(message = "Debe ser un email válido")
         private String email;
 
         @Column(nullable = false)
@@ -46,8 +63,9 @@ public class User implements UserDetails {
         @Column(nullable = false)
         private Role role;
 
+        @Builder.Default
         @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-        private List<Pets> pets = new ArrayList<>();
+        private final List<Pets> pets = new ArrayList<>();
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -57,6 +75,11 @@ public class User implements UserDetails {
         @Override
         public String getUsername() {
                 return email;
+        }
+
+        @Override
+        public String getPassword() {
+                return this.password;
         }
 
         @Override
@@ -77,5 +100,41 @@ public class User implements UserDetails {
         @Override
         public boolean isEnabled() {
                 return true;
+        }
+
+        public Long getId() {
+                return id;
+        }
+
+        public void setId(Long id) {
+                this.id = id;
+        }
+
+        public String getName() {
+                return name;
+        }
+
+        public void setName(String name) {
+                this.name = name;
+        }
+
+        public String getLastname() {
+                return lastname;
+        }
+
+        public void setLastname(String lastname) {
+                this.lastname = lastname;
+        }
+
+        public String getDni() {
+                return dni;
+        }
+
+        public void setDni(String dni) {
+                this.dni = dni;
+        }
+
+        public List<Pets> getPets() {
+                return pets;
         }
 }
