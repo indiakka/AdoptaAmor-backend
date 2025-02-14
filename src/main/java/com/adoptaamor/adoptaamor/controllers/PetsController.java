@@ -30,7 +30,7 @@ public class PetsController {
 
     private final PetsService petsService;
     private final UserService userService;
-    private final FileStorageService fileStorageService; 
+    private final FileStorageService fileStorageService;
 
     public PetsController(PetsService petsService, UserService userService, FileStorageService fileStorageService) {
         this.petsService = petsService;
@@ -41,7 +41,7 @@ public class PetsController {
     @GetMapping("/pets")
     public ResponseEntity<List<Pets>> getPets() {
         List<Pets> pets = petsService.getPets();
-        return ResponseEntity.ok(pets); 
+        return ResponseEntity.ok(pets);
     }
 
     @PostMapping("/pets")
@@ -92,7 +92,7 @@ public class PetsController {
         if (imagen != null && !imagen.isEmpty()) {
             String imageUrl = fileStorageService.storeFile(imagen);
             if (imageUrl != null) {
-                pet.setImagen(imageUrl); 
+                pet.setImagen(imageUrl);
             }
         }
 
