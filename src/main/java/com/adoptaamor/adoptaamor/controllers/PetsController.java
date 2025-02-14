@@ -5,10 +5,20 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.adoptaamor.adoptaamor.models.Pets;
 import com.adoptaamor.adoptaamor.payloads.AnimalDto;
+import com.adoptaamor.adoptaamor.services.FileStorageService;
 import com.adoptaamor.adoptaamor.services.PetsService;
 import com.adoptaamor.adoptaamor.services.UserService;
 
@@ -20,19 +30,18 @@ public class PetsController {
 
     private final PetsService petsService;
     private final UserService userService;
+    private final FileStorageService fileStorageService; 
 
-    public PetsController(PetsService petsService,UserService userService) {
+    public PetsController(PetsService petsService, UserService userService, FileStorageService fileStorageService) {
         this.petsService = petsService;
         this.userService = userService;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("/pets")
     public ResponseEntity<List<Pets>> getPets() {
         List<Pets> pets = petsService.getPets();
-        if (pets.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(pets);
+        return ResponseEntity.ok(pets); 
     }
 
     @PostMapping("/pets")
@@ -46,7 +55,7 @@ public class PetsController {
         pet.setEdad(animalDto.getEdad());
         pet.setImagen(animalDto.getImagen());
         pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : "Bilbao");
-        pet.setGastosDeGestion("500€"); 
+        pet.setGastosDeGestion("500€");
         pet.setUser(userService.getCurrentUser());
 
         petsService.addPets(pet);
@@ -54,23 +63,38 @@ public class PetsController {
     }
 
     @PutMapping("/pets/{id}")
-    public ResponseEntity<?> updatePets(@PathVariable("id") int id, @RequestBody AnimalDto animalDto) {
+    public ResponseEntity<?> updatePets(
+            @PathVariable("id") int id,
+            @RequestParam("tipo") String tipo,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("raza") String raza,
+            @RequestParam("tamano") String tamano,
+            @RequestParam("cuidadosEspeciales") String cuidadosEspeciales,
+            @RequestParam("ubicacion") String ubicacion,
+            @RequestParam("edad") int edad,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagen) {
+
         Optional<Pets> optionalPet = petsService.getPetsById(id);
         if (!optionalPet.isPresent()) {
             return new ResponseEntity<>("Animal no encontrado", HttpStatus.NOT_FOUND);
         }
 
         Pets pet = optionalPet.get();
-        
-        pet.setNombre(animalDto.getNombre() != null ? animalDto.getNombre() : pet.getNombre());
-        pet.setRaza(animalDto.getRaza() != null ? animalDto.getRaza() : pet.getRaza());
-        pet.setTipo(animalDto.getTipo() != null ? animalDto.getTipo() : pet.getTipo());
-        pet.setTamano(animalDto.getTamano() != null ? animalDto.getTamano() : pet.getTamano());
-        pet.setCuidadosEspeciales(animalDto.getCuidadosEspeciales() != null ? animalDto.getCuidadosEspeciales() : pet.getCuidadosEspeciales());
-        pet.setEdad(animalDto.getEdad() > 0 ? animalDto.getEdad() : pet.getEdad());
-        pet.setImagen(animalDto.getImagen() != null ? animalDto.getImagen() : pet.getImagen());
 
-        pet.setUbicacion(animalDto.getUbicacion() != null ? animalDto.getUbicacion() : pet.getUbicacion());
+        pet.setNombre(nombre != null ? nombre : pet.getNombre());
+        pet.setRaza(raza != null ? raza : pet.getRaza());
+        pet.setTipo(tipo != null ? tipo : pet.getTipo());
+        pet.setTamano(tamano != null ? tamano : pet.getTamano());
+        pet.setCuidadosEspeciales(cuidadosEspeciales != null ? cuidadosEspeciales : pet.getCuidadosEspeciales());
+        pet.setEdad(edad > 0 ? edad : pet.getEdad());
+        pet.setUbicacion(ubicacion != null ? ubicacion : pet.getUbicacion());
+
+        if (imagen != null && !imagen.isEmpty()) {
+            String imageUrl = fileStorageService.storeFile(imagen);
+            if (imageUrl != null) {
+                pet.setImagen(imageUrl); 
+            }
+        }
 
         petsService.updatePets(id, pet);
         return new ResponseEntity<>(pet, HttpStatus.OK);
