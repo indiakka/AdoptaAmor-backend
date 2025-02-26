@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,10 +36,14 @@ public class SavedUserPets {
     @Column(nullable = false)
     private String animal_typeString;
 
-    @Column(nullable = false)
-    private Date savedDateString;
+    @Column(nullable = false, updatable = false)
+    private Date savedDate;
 
     @Column(nullable = true)
-    private Date reservedDateString;
+    private Date reservedDate;
 
+    @PrePersist
+    protected void onCreate() {
+        this.savedDate = new Date();
+    }
 }
